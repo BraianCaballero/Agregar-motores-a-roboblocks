@@ -45,19 +45,24 @@ Blockly.Arduino.motor_dc = {
       var pinIn4 = Blockly.Arduino.valueToCode(this, 'IN4', Blockly.Arduino.ORDER_ATOMIC) || '0';
       var pinEnB = Blockly.Arduino.valueToCode(this, 'ENB', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
-      Blockly.Arduino.definitions_['motor_dc_definitions_include'] = JST['motor_dc_definitions_include']();
+  Blockly.Arduino.definitions_['motor_dc_definitions_include'] = JST['motor_dc_definitions_include']({
+    'In1': pinIn1,
+    'In2': pinIn2,
+    'In3': pinIn3,
+    'In4': pinIn4,
+    'EnA': pinEnA,
+    'EnB': pinEnB
+  });
 
-      var definitions = JST['motor_dc_definitions']({
-          'pinEnA': pinEnA,
-          'pinIn1': pinIn1,
-          'pinIn2': pinIn2,
-          'pinIn3': pinIn3,
-          'pinIn4': pinIn4,
-          'pinEnB': pinEnB
-      });
-
-      return definitions;
-  },
+  var definitions = JST['motor_dc_setups']({
+    'In1': pinIn1,
+    'In2': pinIn2,
+    'In3': pinIn3,
+    'In4': pinIn4,
+    'EnA': pinEnA,
+    'EnB': pinEnB
+  });
+  return definitions;
 };
 
 Blockly.Arduino.motor_dc.setup = function() {
@@ -68,7 +73,7 @@ Blockly.Arduino.motor_dc.setup = function() {
     var pinIn4 = Blockly.Arduino.valueToCode(this, 'IN4', Blockly.Arduino.ORDER_ATOMIC) || '0';
     var pinEnB = Blockly.Arduino.valueToCode(this, 'ENB', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
-    Blockly.Arduino.setups_['motor_dc_setup'] = JST['motor_dc_setups']({
+    Blockly.Arduino.setups_['motor_dc_setup'] = JST['motor_dc_setup']({
         'pinEnA': pinEnA,
         'pinIn1': pinIn1,
         'pinIn2': pinIn2,
@@ -80,7 +85,7 @@ Blockly.Arduino.motor_dc.setup = function() {
     return '';
 };
 
-Blockly.Arduino.motor_dc.codeGenerator = function() {
+Blockly.Arduino.motores_dc.codeGenerator = function() {
     var pinEnA = Blockly.Arduino.valueToCode(this, 'ENA', Blockly.Arduino.ORDER_ATOMIC) || '0';
     var pinIn1 = Blockly.Arduino.valueToCode(this, 'IN1', Blockly.Arduino.ORDER_ATOMIC) || '0';
     var pinIn2 = Blockly.Arduino.valueToCode(this, 'IN2', Blockly.Arduino.ORDER_ATOMIC) || '0';
@@ -89,21 +94,21 @@ Blockly.Arduino.motor_dc.codeGenerator = function() {
     var pinEnB = Blockly.Arduino.valueToCode(this, 'ENB', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
     var speed = Blockly.Arduino.valueToCode(this, 'SPEED', Blockly.Arduino.ORDER_ATOMIC) || '0';
-    var direction = this.getFieldValue('DIRECTION');
+    var rotation = this.getFieldValue('ROTATION');
 
     var code = '';
 
-    if (direction === 'CLOCKWISE') {
+    if (rotation === 'CLOCKWISE') {
         code += 'digitalWrite(' + pinIn1 + ', HIGH);\n';
         code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
         code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
-    } else if (direction === 'COUNTER_CLOCKWISE') {
+    } else if (rotation === 'COUNTER_CLOCKWISE') {
         code += 'digitalWrite(' + pinIn2 + ', HIGH);\n';
         code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
         code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
-    } else if (direction === 'STOP') {
+    } else if (rotation === 'STOP') {
         code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
@@ -116,38 +121,39 @@ Blockly.Arduino.motor_dc.codeGenerator = function() {
     return code;
 };
 
-Blockly.Blocks['motor_dc'] = {
+Blockly.Blocks.motores_dc = {
     init: function() {
+        this.setColour(RoboBlocks.LANG_COLOUR_MOTOR_DC)
+        this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_MOTOR_DEF')).appendField(new Blockly.FieldImage('img/blocks/Motor-DC.png', 208 * options.zoom, 100 * options.zoom));
         this.appendDummyInput()
             .appendField("Motor DC")
+            .appendField(RoboBlocks.locales.getKey('LANG_MOTOR_MOVE_PIN'))
             .appendField("ENA:")
-            .appendField(new Blockly.FieldTextInput("0"), "ENA")
+            .appendField(new Blockly.FieldTextInput("3"), "ENA")
             .appendField("IN1:")
-            .appendField(new Blockly.FieldTextInput("0"), "IN1")
+            .appendField(new Blockly.FieldTextInput("2"), "IN1")
             .appendField("IN2:")
-            .appendField(new Blockly.FieldTextInput("0"), "IN2")
+            .appendField(new Blockly.FieldTextInput("4"), "IN2")
             .appendField("IN3:")
-            .appendField(new Blockly.FieldTextInput("0"), "IN3")
+            .appendField(new Blockly.FieldTextInput("5"), "IN3")
             .appendField("IN4:")
-            .appendField(new Blockly.FieldTextInput("0"), "IN4")
+            .appendField(new Blockly.FieldTextInput("7"), "IN4")
             .appendField("ENB:")
-            .appendField(new Blockly.FieldTextInput("0"), "ENB");
+            .appendField(new Blockly.FieldTextInput("6"), "ENB");
         this.appendDummyInput()
-            .appendField("Direction:")
+            .appendField("Rotation:")
             .appendField(new Blockly.FieldDropdown([
                 ["Clockwise", "CLOCKWISE"],
                 ["Counter Clockwise", "COUNTER_CLOCKWISE"],
                 ["Stop", "STOP"]
-            ]), "DIRECTION");
+            ]), "ROTATION");
         this.appendValueInput("SPEED")
             .setCheck("Number")
             .appendField("Speed (0-255):");
         this.setInputsInline(false);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
+        this.setTooltip(RoboBlocks.locales.getKey('LANG_Motor_DEF_TOOLTIP'));
     }
 };
 
@@ -161,7 +167,7 @@ Blockly.Arduino.motor_dc_setups = Blockly.Arduino.motor_dc.setup;
 Blockly.Arduino['motor_dc'] = function(block) {
   var motor = block.getFieldValue('MOTOR');
   var speed = Blockly.Arduino.valueToCode(block, 'SPEED', Blockly.Arduino.ORDER_ATOMIC) || '0';
-  var direction = block.getFieldValue('DIRECTION');
+  var rotation = block.getFieldValue('ROTATION');
 
   var pinEnA, pinIn1, pinIn2, pinEnB, pinIn3, pinIn4;
   if (motor === 'Motor0') {
@@ -176,17 +182,17 @@ Blockly.Arduino['motor_dc'] = function(block) {
 
   var code = '';
 
-  if (direction === 'CLOCKWISE') {
+  if (rotation === 'CLOCKWISE') {
     code += 'digitalWrite(' + pinIn1 + ', HIGH);\n';
     code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
     code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
-  } else if (direction === 'COUNTER_CLOCKWISE') {
+  } else if (rotation === 'COUNTER_CLOCKWISE') {
     code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn2 + ', HIGH);\n';
     code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
-  } else if (direction === 'STOP') {
+  } else if (rotation === 'STOP') {
     code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
@@ -204,7 +210,7 @@ Blockly.Arduino['motor_dc'] = function(block) {
   return code;
 };
 
-Blockly.Blocks['motor_dc'] = {
+Blockly.Blocks.motor_dc = {
   init: function() {
     this.appendDummyInput()
         .appendField("Motor DC")
@@ -213,12 +219,12 @@ Blockly.Blocks['motor_dc'] = {
         .setCheck("Number")
         .appendField("Speed (0-255):");
     this.appendDummyInput()
-        .appendField("Direction:")
+        .appendField("Rotation:")
         .appendField(new Blockly.FieldDropdown([
           ["Clockwise", "CLOCKWISE"],
           ["Counter Clockwise", "COUNTER_CLOCKWISE"],
           ["Stop", "STOP"]
-        ]), "DIRECTION");
+        ]), "ROTATION");
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -244,3 +250,55 @@ Blockly.Arduino['motor_dc'].setup = function() {
 
   return code;
 };
+
+//motor dc blocks :
+LANG_CATEGORY_MOTOR_DC: 'Motor DC',
+LANG_MOTOR_DEF: 'Motor DC',
+LANG_MOTOR_DEF_TOOLTIP: 'Define el Motor',
+LANG_MOTOR_MOVE_TURN_CLOCKWISE: 'Rotar motor en sentido horario',
+LANG_MOTOR_MOVE_TURN_COUNTERCLOCKWISE: 'Rotar motor en sentido antihorario',
+LANG_MOTOR_CONT_ROT: 'Rotación',
+LANG_MOTOR_MOVE_STOPPED: 'Detener',
+LANG_MOTOR_MOVE_MOTOR: 'Motor#',
+LANG_MOTOR_CONT_SPEED: 'Velocidad',
+LANG_MOTOR_MOVE_PIN: 'PIN#',
+LANG_MOTOR_MOVE_DELAY: 'Tiempo [ms]',
+LANG_MOTOR_MOVE_SPEED: 'Velocidad',
+LANG_MOTOR_MOVE_FORWARD: 'Mover hacia adelante',
+LANG_MOTOR_MOVE_BACKWARD: 'Mover hacia atras',
+LANG_MOTOR_MOVE_TURN_RIGHT: 'Girar hacia la derecha',
+LANG_MOTOR_MOVE_TURN_LEFT: 'Girar hacia la izquierda',
+LANG_MOTOR_MOVE_STOP_MOVING: 'Detener el movimiento',
+LAN_MOTOR_TOOLTIP: 'Gira el motor en el sentido seleccionado',
+LANG_MOTOR_WARNING: 'No puedes asignar una variable al pin del motor'
+
+// RGB block colors
+RoboBlocks.LANG_COLOUR_BQ = '#D04141';
+RoboBlocks.LANG_COLOUR_ZUM = '#CC7B44';
+RoboBlocks.LANG_COLOUR_SERVO = '#CECE42';
+RoboBlocks.LANG_COLOUR_LCD = '#ACCE42';
+RoboBlocks.LANG_COLOUR_CONTROL = '#44CC44';
+RoboBlocks.LANG_COLOUR_LOGIC = '#42CE91';
+RoboBlocks.LANG_COLOUR_MATH = '#42CBCE';
+RoboBlocks.LANG_COLOUR_TEXT = '#42A3CE';
+RoboBlocks.LANG_COLOUR_COMMUNICATION = '#4263CE';
+RoboBlocks.LANG_COLOUR_ADVANCED = '#9142CE';
+RoboBlocks.LANG_COLOUR_VARIABLES = '#B244CC';
+RoboBlocks.LANG_COLOUR_PROCEDURES = '#CE42B3';
+RoboBlocks.LANG_COLOUR_MOTOR_DC = '#D3830E';
+RoboBlocks.setColors = function(colorArray) {
+    RoboBlocks.LANG_COLOUR_BQ = colorArray[0];
+    RoboBlocks.LANG_COLOUR_ZUM = colorArray[1];
+    RoboBlocks.LANG_COLOUR_SERVO = colorArray[2];
+    RoboBlocks.LANG_COLOUR_LCD = colorArray[3];
+    RoboBlocks.LANG_COLOUR_CONTROL = colorArray[4];
+    RoboBlocks.LANG_COLOUR_LOGIC = colorArray[5];
+    RoboBlocks.LANG_COLOUR_MATH = colorArray[6];
+    RoboBlocks.LANG_COLOUR_TEXT = colorArray[7];
+    RoboBlocks.LANG_COLOUR_COMMUNICATION = colorArray[8];
+    RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[9];
+    RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[10];
+    RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[11];
+    RoboBlocks.LANG_COLOUR_MOTOR_DC = colorArray[12];
+
+
