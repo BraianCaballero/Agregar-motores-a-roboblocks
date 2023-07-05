@@ -85,7 +85,7 @@ Blockly.Arduino.motor_dc.setup = function() {
     return '';
 };
 
-Blockly.Arduino.motores_dc.codeGenerator = function() {
+Blockly.Arduino.motor_dc.codeGenerator = function() {
     var pinEnA = Blockly.Arduino.valueToCode(this, 'ENA', Blockly.Arduino.ORDER_ATOMIC) || '0';
     var pinIn1 = Blockly.Arduino.valueToCode(this, 'IN1', Blockly.Arduino.ORDER_ATOMIC) || '0';
     var pinIn2 = Blockly.Arduino.valueToCode(this, 'IN2', Blockly.Arduino.ORDER_ATOMIC) || '0';
@@ -121,7 +121,7 @@ Blockly.Arduino.motores_dc.codeGenerator = function() {
     return code;
 };
 
-Blockly.Blocks.motores_dc = {
+Blockly.Blocks['motor_dc'] = {
     init: function() {
         this.setColour(RoboBlocks.LANG_COLOUR_MOTOR_DC)
         this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_MOTOR_DEF')).appendField(new Blockly.FieldImage('img/blocks/Motor-DC.png', 208 * options.zoom, 100 * options.zoom));
@@ -159,8 +159,8 @@ Blockly.Blocks.motores_dc = {
 
 // Generator stubs for the motor_dc code generator
 Blockly.JavaScript['motor_dc'] = Blockly.Arduino.motor_dc.codeGenerator;
-Blockly.Arduino.motor_dc_definitions = Blockly.Arduino.motor_dc.definitions;
-Blockly.Arduino.motor_dc_setups = Blockly.Arduino.motor_dc.setup;
+Blockly.Arduino.['motor_dc'].definitions = Blockly.Arduino.motor_dc.definitions;
+Blockly.Arduino.['motor_dc'].setups = Blockly.Arduino.motor_dc.setup;
 
 
 ///////////////////// Motores por separado (Motor0, Motor1) ///////////////////////////
@@ -210,7 +210,7 @@ Blockly.Arduino['motor_dc'] = function(block) {
   return code;
 };
 
-Blockly.Blocks.motor_dc = {
+Blockly.Blocks.['motor_dc'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Motor DC")
@@ -233,23 +233,11 @@ Blockly.Blocks.motor_dc = {
   }
 };
 
-Blockly.JavaScript['motor_dc'] = Blockly.Arduino['motor_dc'];
-Blockly.Arduino['motor_dc'].definitions = function() {
-  return '';
+Blockly.JavaScript['motor_dc'] = Blockly.Arduino['motor_dc'],
+Blockly.Arduino['motor_dc'] = Blockly.Arduino['motor_dc'],
 };
 
-Blockly.Arduino['motor_dc'].setup = function() {
-  var code = '';
 
-  code += 'pinMode(2, OUTPUT);\n';
-  code += 'pinMode(3, OUTPUT);\n';
-  code += 'pinMode(4, OUTPUT);\n';
-  code += 'pinMode(5, OUTPUT);\n';
-  code += 'pinMode(6, OUTPUT);\n';
-  code += 'pinMode(7, OUTPUT);\n';
-
-  return code;
-};
 
 //motor dc blocks :
 LANG_CATEGORY_MOTOR_DC: 'Motor DC',
@@ -302,3 +290,15 @@ RoboBlocks.setColors = function(colorArray) {
     RoboBlocks.LANG_COLOUR_MOTOR_DC = colorArray[12];
 
 
+Blockly.Arduino['motor_dc'].setup = function() {
+  var code = '';
+
+  code += 'pinMode(2, OUTPUT);\n';
+  code += 'pinMode(3, OUTPUT);\n';
+  code += 'pinMode(4, OUTPUT);\n';
+  code += 'pinMode(5, OUTPUT);\n';
+  code += 'pinMode(6, OUTPUT);\n';
+  code += 'pinMode(7, OUTPUT);\n';
+
+  return code;
+};
