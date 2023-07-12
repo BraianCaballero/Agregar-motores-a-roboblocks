@@ -185,13 +185,13 @@ Blockly.Arduino['motor_dc'] = function(block) {
   if (rotation === 'CLOCKWISE') {
     code += 'digitalWrite(' + pinIn1 + ', HIGH);\n';
     code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
-    code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
-    code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
+    code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
+    code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
   } else if (rotation === 'COUNTER_CLOCKWISE') {
     code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn2 + ', HIGH);\n';
-    code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
-    code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
+    code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
+    code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
   } else if (rotation === 'STOP') {
     code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
     code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
