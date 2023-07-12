@@ -5,12 +5,12 @@ this["JST"]["motor_dc_definitions_include"] = function(obj) {
     var __t, __p = '',
         __e = _.escape;
     with(obj) {
-        __p += '#define In1 <2>\n';
-        __p += '#define In2 <4>\n';
-        __p += '#define In3 <5>\n';
-        __p += '#define In4 <7>\n';
-        __p += '#define EnA <3>\n';
-        __p += '#define EnB <6>\n';
+        __p += 'const int In1 = 2;\n';
+        __p += 'const int In2 = 4;\n';
+        __p += 'const int In3 = 5;\n';
+        __p += 'const int In4 = 7;\n';
+        __p += 'const int EnA = 3;\n';
+        __p += 'const int EnB = 6;\n';
     }
     return __p;
 };
@@ -100,14 +100,14 @@ Blockly.Arduino.motor_dc.codeGenerator = function() {
 
     if (rotation === 'CLOCKWISE') {
         code += 'digitalWrite(' + pinIn1 + ', HIGH);\n';
-        code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
+        code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn2 + ', LOW);\n';
-        code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
+        code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
     } else if (rotation === 'COUNTER_CLOCKWISE') {
         code += 'digitalWrite(' + pinIn2 + ', HIGH);\n';
-        code += 'digitalWrite(' + pinIn4 + ', HIGH);\n';
+        code += 'digitalWrite(' + pinIn4 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
-        code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
+        code += 'digitalWrite(' + pinIn3 + ', HIGH);\n';
     } else if (rotation === 'STOP') {
         code += 'digitalWrite(' + pinIn1 + ', LOW);\n';
         code += 'digitalWrite(' + pinIn3 + ', LOW);\n';
@@ -125,7 +125,7 @@ Blockly.Blocks['motor_dc'] = {
     init: function() {
         this.setColour(RoboBlocks.LANG_COLOUR_MOTOR_DC)
         this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_MOTOR_DEF')).appendField(new Blockly.FieldImage('img/blocks/Motor-DC.png', 208 * options.zoom, 100 * options.zoom));
-        this.appendDummyInput()
+        /*this.appendDummyInput()
             .appendField("Motor DC")
             .appendField(RoboBlocks.locales.getKey('LANG_MOTOR_MOVE_PIN'))
             .appendField("ENA:")
@@ -139,7 +139,7 @@ Blockly.Blocks['motor_dc'] = {
             .appendField("IN4:")
             .appendField(new Blockly.FieldTextInput("7"), "IN4")
             .appendField("ENB:")
-            .appendField(new Blockly.FieldTextInput("6"), "ENB");
+            .appendField(new Blockly.FieldTextInput("6"), "ENB");*/
         this.appendDummyInput()
             .appendField("Rotation:")
             .appendField(new Blockly.FieldDropdown([
